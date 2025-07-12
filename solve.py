@@ -5,6 +5,7 @@ import os
 import argparse
 import logging
 import time
+import datetime
 from functools import wraps
 
 PATTERN_TO_DETECT = r'!\[\[(.*?)\]\]'
@@ -87,24 +88,12 @@ def add_front_matter_to_markdown(directory):
                 logging.info(f"Front matter already exists. No changes made. {filename}")
                 continue
 
-            match = re.search(PATTERN_TO_DETECT, content)
-            try:
-                if match:
-                    # Extract and print the first value found
-                    first_value = match.group(1)
-
-                    date = first_value.split("_")[2].split(".")[0]
-                    year = date[0:4]
-                    month = date[4:6]
-                    day = date[6:8]
-            except:
-                date = first_value.split("-")
-                year = date[0].split(" ")[-1]
-                month = date[1]
-                day = date[2][0:2]
+            now = datetime.datetime.now()
+            year, month, day = now.year, now.month, now.day
+            date_str = "-".join(map(str, [year, month, day]))
 
             file_name = os.path.basename(filename)
-            front_matter = "---" + "\n" "title: " + '"' + file_name[:-3] + '"' "\n" + "date: " + '"' + year + "-" + month + "-" + day + '"' + "\n" + "draft: false" + "\n" + "---" + "\n" + content
+            front_matter = "---" + "\n" "title: " + '"' + file_name[:-3] + '"' "\n" + "date: " + '"' + date_str + '"' + "\n" + "draft: false" + "\n" + "---" + "\n" + content
 
             if content != front_matter:
                 with open(filename, "w", encoding="utf-8") as file:
