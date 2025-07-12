@@ -89,8 +89,7 @@ def add_front_matter_to_markdown(directory):
                 continue
 
             now = datetime.datetime.now()
-            year, month, day = now.year, now.month, now.day
-            date_str = "-".join(map(str, [year, month, day]))
+            date_str = now.strftime("%Y-%m-%d")
 
             file_name = os.path.basename(filename)
             front_matter = "---" + "\n" "title: " + '"' + file_name[:-3] + '"' "\n" + "date: " + '"' + date_str + '"' + "\n" + "draft: false" + "\n" + "---" + "\n" + content
